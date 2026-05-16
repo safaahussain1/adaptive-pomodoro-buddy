@@ -1,849 +1,162 @@
 [
     {
-        "timestamp": 1778910849.301594,
-        "elapsed_seconds": 1,
-        "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910850.363852,
+        "timestamp": 1778913811.039667,
         "elapsed_seconds": 2,
         "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
+        "gaze_score": 1,
+        "posture_score": 1,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910851.3671832,
+        "timestamp": 1778913811.1210098,
+        "elapsed_seconds": 2,
+        "is_working_block": true,
+        "gaze_score": 1,
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
+    },
+    {
+        "timestamp": 1778913812.1363368,
         "elapsed_seconds": 3,
         "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
+        "gaze_score": 1,
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910852.434527,
+        "timestamp": 1778913813.201074,
         "elapsed_seconds": 4,
         "is_working_block": true,
         "gaze_score": 1,
-        "posture_score": 0
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910853.470283,
+        "timestamp": 1778913814.202399,
         "elapsed_seconds": 5,
         "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
+        "gaze_score": 1,
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910854.472885,
+        "timestamp": 1778913815.235008,
         "elapsed_seconds": 6,
         "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
+        "gaze_score": 1,
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910855.537354,
+        "timestamp": 1778913816.240534,
         "elapsed_seconds": 7,
         "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
+        "gaze_score": 1,
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910856.601648,
+        "timestamp": 1778913817.270556,
         "elapsed_seconds": 8,
         "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
+        "gaze_score": 1,
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910857.602535,
+        "timestamp": 1778913818.336836,
         "elapsed_seconds": 9,
         "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
+        "gaze_score": 1,
+        "posture_score": 1,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910858.60544,
+        "timestamp": 1778913819.3740668,
         "elapsed_seconds": 10,
         "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
+        "gaze_score": 1,
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910859.606837,
+        "timestamp": 1778913820.3763561,
         "elapsed_seconds": 11,
         "is_working_block": true,
         "gaze_score": 1,
-        "posture_score": 0
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910860.638557,
-        "elapsed_seconds": 12,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910861.640185,
+        "timestamp": 1778913821.403827,
         "elapsed_seconds": 13,
         "is_working_block": true,
         "gaze_score": 1,
-        "posture_score": 1
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910862.674853,
+        "timestamp": 1778913822.4075332,
         "elapsed_seconds": 14,
         "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
+        "gaze_score": 0,
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910863.67819,
+        "timestamp": 1778913823.42391,
         "elapsed_seconds": 15,
         "is_working_block": true,
         "gaze_score": 1,
-        "posture_score": 1
+        "posture_score": 1,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910864.683462,
+        "timestamp": 1778913824.456672,
         "elapsed_seconds": 16,
         "is_working_block": true,
         "gaze_score": 1,
-        "posture_score": 1
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     },
     {
-        "timestamp": 1778910865.742628,
+        "timestamp": 1778913825.521924,
         "elapsed_seconds": 17,
         "is_working_block": true,
         "gaze_score": 1,
-        "posture_score": 1
-    },
-    {
-        "timestamp": 1778910866.748047,
-        "elapsed_seconds": 18,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 1
-    },
-    {
-        "timestamp": 1778910867.8098629,
-        "elapsed_seconds": 19,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 1
-    },
-    {
-        "timestamp": 1778910868.823906,
-        "elapsed_seconds": 20,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910869.8267672,
-        "elapsed_seconds": 21,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910870.829792,
-        "elapsed_seconds": 22,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910871.879314,
-        "elapsed_seconds": 23,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910872.884929,
-        "elapsed_seconds": 24,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910873.899232,
-        "elapsed_seconds": 25,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910874.916405,
-        "elapsed_seconds": 26,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910875.97553,
-        "elapsed_seconds": 27,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910876.982712,
-        "elapsed_seconds": 28,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910878.050038,
-        "elapsed_seconds": 29,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910879.051615,
-        "elapsed_seconds": 30,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910880.0521111,
-        "elapsed_seconds": 31,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910881.0841851,
-        "elapsed_seconds": 32,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910882.085462,
-        "elapsed_seconds": 33,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910883.114679,
-        "elapsed_seconds": 34,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910884.121351,
-        "elapsed_seconds": 35,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910885.134042,
-        "elapsed_seconds": 36,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910886.183018,
-        "elapsed_seconds": 37,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910887.18727,
-        "elapsed_seconds": 38,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910888.218851,
-        "elapsed_seconds": 39,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910889.2223868,
-        "elapsed_seconds": 40,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910890.257529,
-        "elapsed_seconds": 41,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910891.260449,
-        "elapsed_seconds": 43,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910892.260868,
-        "elapsed_seconds": 44,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910893.321055,
-        "elapsed_seconds": 45,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910894.3548422,
-        "elapsed_seconds": 46,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910895.424972,
-        "elapsed_seconds": 47,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910896.437314,
-        "elapsed_seconds": 48,
-        "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910897.471904,
-        "elapsed_seconds": 49,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910898.4721768,
-        "elapsed_seconds": 50,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910899.5146089,
-        "elapsed_seconds": 51,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910900.5709188,
-        "elapsed_seconds": 52,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910901.60754,
-        "elapsed_seconds": 53,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910902.6769578,
-        "elapsed_seconds": 54,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910903.6994581,
-        "elapsed_seconds": 55,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910904.701797,
-        "elapsed_seconds": 56,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910905.7149272,
-        "elapsed_seconds": 57,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910906.744509,
-        "elapsed_seconds": 58,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910907.748416,
-        "elapsed_seconds": 0,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910908.749173,
-        "elapsed_seconds": 1,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910909.815519,
-        "elapsed_seconds": 2,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910910.850155,
-        "elapsed_seconds": 3,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910911.867424,
-        "elapsed_seconds": 4,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910912.8968909,
-        "elapsed_seconds": 5,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910913.899751,
-        "elapsed_seconds": 6,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910914.9009862,
-        "elapsed_seconds": 7,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910915.931382,
-        "elapsed_seconds": 8,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910916.9353018,
-        "elapsed_seconds": 9,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910917.9652748,
-        "elapsed_seconds": 10,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910918.9661481,
-        "elapsed_seconds": 11,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910920.031969,
-        "elapsed_seconds": 12,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910921.032843,
-        "elapsed_seconds": 13,
-        "is_working_block": false,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910922.068197,
-        "elapsed_seconds": 14,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910923.1373188,
-        "elapsed_seconds": 15,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910924.2062259,
-        "elapsed_seconds": 16,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910925.268854,
-        "elapsed_seconds": 17,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910926.2762592,
-        "elapsed_seconds": 18,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910927.339168,
-        "elapsed_seconds": 20,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910928.407844,
-        "elapsed_seconds": 21,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910929.473998,
-        "elapsed_seconds": 22,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910930.538146,
-        "elapsed_seconds": 23,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910931.54563,
-        "elapsed_seconds": 24,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910932.54688,
-        "elapsed_seconds": 25,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910933.61306,
-        "elapsed_seconds": 26,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910934.614445,
-        "elapsed_seconds": 27,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910935.6771631,
-        "elapsed_seconds": 28,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910936.678258,
-        "elapsed_seconds": 29,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910937.680279,
-        "elapsed_seconds": 30,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910938.749414,
-        "elapsed_seconds": 31,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910939.7788742,
-        "elapsed_seconds": 32,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910940.781285,
-        "elapsed_seconds": 33,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910941.782336,
-        "elapsed_seconds": 34,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910942.8481002,
-        "elapsed_seconds": 35,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910943.848696,
-        "elapsed_seconds": 36,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910944.8496718,
-        "elapsed_seconds": 37,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910945.850336,
-        "elapsed_seconds": 38,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910946.8508742,
-        "elapsed_seconds": 39,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910947.91602,
-        "elapsed_seconds": 40,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910948.917804,
-        "elapsed_seconds": 41,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910949.9183302,
-        "elapsed_seconds": 42,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910950.9194958,
-        "elapsed_seconds": 43,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910951.98669,
-        "elapsed_seconds": 44,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910953.053911,
-        "elapsed_seconds": 45,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910954.1200159,
-        "elapsed_seconds": 46,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910955.122336,
-        "elapsed_seconds": 47,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910956.139779,
-        "elapsed_seconds": 48,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910957.1517289,
-        "elapsed_seconds": 49,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910958.15566,
-        "elapsed_seconds": 50,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910959.183296,
-        "elapsed_seconds": 51,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910960.191607,
-        "elapsed_seconds": 52,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910961.223144,
-        "elapsed_seconds": 53,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910962.28613,
-        "elapsed_seconds": 55,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910963.325242,
-        "elapsed_seconds": 56,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910964.390962,
-        "elapsed_seconds": 57,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910965.422164,
-        "elapsed_seconds": 58,
-        "is_working_block": false,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910966.4243898,
-        "elapsed_seconds": 0,
-        "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910967.493876,
-        "elapsed_seconds": 1,
-        "is_working_block": true,
-        "gaze_score": 0,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910968.497441,
-        "elapsed_seconds": 2,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910969.56102,
-        "elapsed_seconds": 3,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 1
-    },
-    {
-        "timestamp": 1778910970.594012,
-        "elapsed_seconds": 4,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910971.5975559,
-        "elapsed_seconds": 5,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
-    },
-    {
-        "timestamp": 1778910972.628824,
-        "elapsed_seconds": 6,
-        "is_working_block": true,
-        "gaze_score": 1,
-        "posture_score": 0
+        "posture_score": 0,
+        "blinks_in_last_sec": 0,
+        "active_app": "python",
+        "window_is_productive": 0
     }
 ]
