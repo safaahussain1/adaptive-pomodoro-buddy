@@ -66,3 +66,44 @@ class PomodoroSessionManager:
         with open(filename, "w") as f:
             json.dump(self.history_logs, f, indent=4)
         print(f"\n[Session Saved] Metric log written to {filename}")
+
+    def evaluate_interventions(self):
+        """
+        Evaluates recent time-series data points to determine if an adaptive 
+        intervention (extend, break early, or posture nudge) is required.
+        """
+        now = time.time()
+        # Look back at the last 30 seconds for quick triggers
+        recent_points = [p for p in self.history_logs if now - p["timestamp"] <= 30]
+        
+        if len(recent_points) < 10:  # Not enough data points gathered yet
+            return None
+
+        # 1. Posture Check
+        slouching_frames = sum(1 for p in recent_points if p["posture_score"] == 0)
+        slouch_ratio = slouching_frames / len(recent_points)
+        if slouch_ratio > 0.70:  # Slouching for more than 70% of the last 30 seconds
+            return "POSTURE_NUDGE"
+
+        # 2. Adaptive Pomodoro Adjustments (Only evaluated during work blocks)
+        if self.is_working:
+            time_left = self.get_remaining_time()
+            rolling_focus = self.compute_focus_score(window_seconds=60)
+
+            # Scenario A: Cognitive Fatigue / Deep Distraction -> Early Break
+            # If you are more than halfway through your session but your focus drops below 30%
+            elapsed = time.time() - self.block_start_time
+            if elapsed > (self.work_duration_seconds / 2) and rolling_focus < 30.0:
+                # Dynamically shorten the block by cutting the remaining time to 0
+                self.is_working = False
+                self.block_start_time = time.time() # Reset block anchor
+                return "EARLY_BREAK"
+
+            # Scenario B: Deep Flow State -> Extend Session
+            # If the timer is about to run out (less than 10s left) and focus is pristine (>85%)
+            if time_left <= 10 and rolling_focus >= 85.0:
+                extension_mins = 5
+                self.work_duration_seconds += (extension_mins * 60)
+                return "FLOW_EXTENSION"
+
+        return None
