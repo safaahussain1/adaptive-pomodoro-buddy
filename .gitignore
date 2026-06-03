@@ -127,8 +127,13 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# API keys — never commit these
 .env
+
+# Personal session data — biometric logs, keep off GitHub
+session_*.json
+session_history.json
+.overlay_msg
 .venv
 env/
 venv/
