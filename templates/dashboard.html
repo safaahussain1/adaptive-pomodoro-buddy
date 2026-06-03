@@ -439,15 +439,23 @@ async function fetchAdvice() {
     const data = await res.json();
     box.style.fontStyle = "normal";
     box.style.color = "var(--text)";
-    // Render each bullet on its own line
-    box.innerHTML = data.advice
-      .split(/•/).filter(s => s.trim())
-      .map(s => `<div style="display:flex;gap:8px;margin-bottom:6px"><span style="color:#7c3aed;flex-shrink:0">•</span><span>${s.trim()}</span></div>`)
-      .join("");
+    // Split on bullet char or newline+bullet, render each on its own line
+    // Only keep lines that start with a bullet — skip any preamble Gemini adds
+    const bullets = data.advice
+      .split(/\n/)
+      .filter(s => s.trim().startsWith("•"))
+      .map(s => s.replace(/^•\s*/, "").trim())
+      .filter(s => s.length > 0);
+    box.innerHTML = bullets.map(s =>
+      `<div style="display:flex;gap:10px;margin-bottom:8px;align-items:flex-start">
+         <span style="color:#7c3aed;font-size:1.1rem;flex-shrink:0;margin-top:1px">•</span>
+         <span style="line-height:1.5">${s}</span>
+       </div>`
+    ).join("");
     btn.innerHTML = "Refresh Advice";
     btn.disabled = false;
   } catch (e) {
-    box.textContent = "Could not fetch advice. Make sure your ANTHROPIC_API_KEY is set in .env";
+    box.textContent = "Could not fetch advice — rate limited or GEMINI_API_KEY not set in .env. Try again in a minute.";
     btn.innerHTML = "Try Again";
     btn.disabled = false;
   }

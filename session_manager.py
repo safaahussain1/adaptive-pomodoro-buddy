@@ -7,6 +7,11 @@ PRODUCTIVE_APPS = {
     "Terminal", "iTerm2", "Xcode", "Safari", "Google Chrome", "Firefox",
     "Arc", "Cursor", "PyCharm", "IntelliJ IDEA", "WebStorm", "Slack",
     "Notion", "Obsidian", "Notes", "TextEdit", "Sublime Text",
+    # AI tools
+    "Claude", "Claude Code", "ChatGPT",
+    # Common study/research apps
+    "Zotero", "Papers", "Mendeley", "Word", "Microsoft Word",
+    "Excel", "Pages", "Numbers", "Keynote",
 }
 
 # Never treat these as the "active" app — they are our own window or system UI.
@@ -86,14 +91,26 @@ class PomodoroSessionManager:
 
     # ------------------------------------------------------------------
     def compute_focus_score(self, window_seconds=60):
+        """
+        Weighted focus score:
+          gaze ON + productive app  = 1.0 point  (full focus)
+          gaze ON + unknown app     = 0.6 point  (looking at screen, unrecognized app)
+          gaze OFF                  = 0.0 points
+        Avoids punishing users who use apps not in PRODUCTIVE_APPS.
+        """
         if not self.history_logs:
             return 100.0
         now = time.time()
         recent = [p for p in self.history_logs if now - p["timestamp"] <= window_seconds]
         if not recent:
             return 100.0
-        focused = sum(1 for p in recent if p["gaze_score"] == 1 and p["window_is_productive"] == 1)
-        return round(focused / len(recent) * 100, 1)
+        score = sum(
+            1.0 if p["gaze_score"] == 1 and p["window_is_productive"] == 1
+            else 0.6 if p["gaze_score"] == 1
+            else 0.0
+            for p in recent
+        )
+        return round(score / len(recent) * 100, 1)
 
     # ------------------------------------------------------------------
     def evaluate_interventions(self):

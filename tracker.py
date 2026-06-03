@@ -272,6 +272,7 @@ def run_study_buddy(work_mins=25, break_mins=5):
 
     phone_detected = False
     phone_detected_until = 0.0
+    hand_visible_since = None   # timestamp when hand first appeared during work
 
     # Transition state
     in_transition = False
@@ -347,8 +348,11 @@ def run_study_buddy(work_mins=25, break_mins=5):
                         else:
                             is_blinking = False
                         iris = fl.landmark[468]
+                        # Wider range (0.28–0.72): accounts for natural screen-reading
+                        # movement and slight head turns while still catching when
+                        # someone looks fully away (phone, window, etc.)
                         gaze_status = ("Focused on Screen"
-                                       if 0.35 <= iris.x <= 0.65
+                                       if 0.28 <= iris.x <= 0.72
                                        else "Distracted (Looking Away)")
 
                 # Pose / posture
@@ -373,15 +377,21 @@ def run_study_buddy(work_mins=25, break_mins=5):
                     else:
                         print("[Calibration] No pose detected — posture check disabled.")
 
-                # Phone detection
-                if hand_res.multi_hand_landmarks:
+                # Phone detection — hand visible for 3+ continuous seconds during work
+                hands_in_frame = hand_res.multi_hand_landmarks is not None
+                if hands_in_frame:
                     for hl in hand_res.multi_hand_landmarks:
                         mp_drawing.draw_landmarks(frame, hl, mp_hands.HAND_CONNECTIONS)
-                if (hand_res.multi_hand_landmarks
-                        and gaze_status == "Distracted (Looking Away)"
-                        and session.is_working):
-                    phone_detected = True
-                    phone_detected_until = time.time() + 5.0
+
+                if session.is_working and hands_in_frame:
+                    if hand_visible_since is None:
+                        hand_visible_since = time.time()
+                    elif time.time() - hand_visible_since >= 3.0:
+                        phone_detected = True
+                        phone_detected_until = time.time() + 6.0
+                else:
+                    hand_visible_since = None
+
                 if time.time() > phone_detected_until:
                     phone_detected = False
 
@@ -442,7 +452,14 @@ def run_study_buddy(work_mins=25, break_mins=5):
                     transition_going_to_work = not session.is_working  # going TO the opposite
                     label = "Break Time!" if not session.is_working else "Back to Work!"
                     print(f"\n[TIMER] {'WORK' if session.is_working else 'BREAK'} ended → {label}")
-                    notify_macos(label, "Click the camera window to extend if needed.")
+                    notify_macos(label, "Press [E] in the camera window to extend work.")
+                    # Play a gentle tone on break→work only (more important to signal)
+                    if session.is_working:  # currently work, transitioning to break — soft chime
+                        subprocess.Popen(["afplay", "/System/Library/Sounds/Glass.aiff"],
+                                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    else:  # currently break, transitioning to work — stronger alert
+                        subprocess.Popen(["afplay", "/System/Library/Sounds/Ping.aiff"],
+                                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                     if not session.is_working:
                         break_tip = random.choice(BREAK_TIPS)
                     session.timer_history.append((current_time,
