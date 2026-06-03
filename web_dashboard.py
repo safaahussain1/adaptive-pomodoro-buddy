@@ -218,8 +218,9 @@ Write a personal, specific 5–6 sentence coaching note. Cover:
 
 Be direct, warm, and specific. No bullet points. No markdown. Write as flowing paragraphs."""
 
-        model = _get_model()
-        resp = model.generate_content(prompt)
+        client = _get_model()
+        from llm_coach import MODEL
+        resp = client.models.generate_content(model=MODEL, contents=prompt)
         return jsonify({"advice": resp.text.strip()})
     except Exception as e:
         return jsonify({"advice": f"Could not generate advice: {e}"}), 500

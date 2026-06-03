@@ -1,23 +1,22 @@
 import os
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
 
-_model = None
+_client = None
 
 def _get_model():
-    global _model
-    if _model is None:
+    global _client
+    if _client is None:
         key = os.environ.get("GEMINI_API_KEY")
         if not key:
             raise RuntimeError(
-                "GEMINI_API_KEY not set. Add it to a .env file:\n"
-                "  echo 'GEMINI_API_KEY=your-key-here' > .env"
+                "GEMINI_API_KEY not set. Add it to .env:\n"
+                "  echo 'GEMINI_API_KEY=AIzaSy...' > .env"
             )
-        genai.configure(api_key=key)
-        _model = genai.GenerativeModel("gemini-2.0-flash")
-    return _model
+        _client = genai.Client(api_key=key)
+    return _client
 
 TRIGGER_DESCRIPTIONS = {
     "POSTURE_NUDGE":   "the user has been slouching for more than 70% of the last 30 seconds",
@@ -34,6 +33,8 @@ FALLBACKS = {
     "SESSION_END":    "Great session! Take a moment to review what you accomplished.",
     "PHONE_DETECTED": "Put the phone down — you're in a work block. Refocus!",
 }
+
+MODEL = "gemini-2.0-flash"
 
 def get_coaching_message(trigger: str, context: dict) -> str:
     focus      = context.get("focus_score", 50)
@@ -58,8 +59,8 @@ Write a single, brief (2-3 sentence) message to the user. Be warm, specific, and
 No markdown. No bullet points. Speak directly to the user."""
 
     try:
-        model = _get_model()
-        response = model.generate_content(prompt)
+        client = _get_model()
+        response = client.models.generate_content(model=MODEL, contents=prompt)
         return response.text.strip()
     except Exception:
         return FALLBACKS.get(trigger, "Keep going — you're doing great!")

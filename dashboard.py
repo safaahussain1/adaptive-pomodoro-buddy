@@ -209,8 +209,9 @@ Write a personal, specific 4–6 sentence coaching note for this student. Cover:
 Be direct, warm, and specific. No bullet points. No markdown."""
 
     try:
-        model = _get_model()
-        resp = model.generate_content(prompt)
+        from llm_coach import MODEL
+        client = _get_model()
+        resp = client.models.generate_content(model=MODEL, contents=prompt)
         print("\n  PERSONAL AI ADVICE")
         print("  " + "-" * 62)
         for line in resp.text.strip().split("\n"):
