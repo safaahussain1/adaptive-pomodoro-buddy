@@ -51,9 +51,12 @@ class PomodoroSessionManager:
 
     # ------------------------------------------------------------------
     def log_frame_state(self, gaze_status, posture_status, blink_count,
-                        noise_db=40.0, shoulder_y=None):
+                        noise_db=40.0, shoulder_y=None, active_app=None):
         timestamp = time.time()
-        active_app = self.get_active_window_macos()
+        # Use the pre-fetched app name (fetched in background thread in tracker.py)
+        # to avoid calling AppKit on the same thread as OpenCV's Cocoa window.
+        if active_app is None:
+            active_app = self._last_real_app
 
         gaze_numeric = 1 if gaze_status == "Focused on Screen" else 0
         posture_numeric = 1 if posture_status == "Good Posture" else 0

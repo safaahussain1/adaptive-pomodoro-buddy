@@ -19,7 +19,7 @@ import sys
 from dotenv import load_dotenv
 load_dotenv()
 
-from session_manager import PomodoroSessionManager
+from session_manager import PomodoroSessionManager, OWN_PROCESS_NAMES
 from noise_detector import AmbientNoiseDetector
 from analytics import print_session_report, save_session_report
 from llm_coach import get_coaching_message
@@ -199,9 +199,25 @@ def run_study_buddy(work_mins=25, break_mins=5):
     calibration_shoulder_readings = []
 
     # ── Phone detection via hand landmarks ─────────────────────────────
-    # Heuristic: if a hand is detected but gaze is away from screen, likely on phone
     phone_detected = False
     phone_detected_until = 0.0
+
+    # ── AppKit polling in a background thread ──────────────────────────
+    # Calling NSWorkspace on the same thread as OpenCV's Cocoa window
+    # causes the window to freeze. We poll in a daemon thread instead.
+    _app_cache = {"name": "Unknown"}
+    def _poll_active_app():
+        while True:
+            try:
+                from AppKit import NSWorkspace
+                name = NSWorkspace.sharedWorkspace().frontmostApplication().localizedName()
+                if name not in OWN_PROCESS_NAMES:
+                    _app_cache["name"] = name
+                    session._last_real_app = name
+            except Exception:
+                pass
+            time.sleep(2.0)
+    threading.Thread(target=_poll_active_app, daemon=True).start()
 
     print("=" * 60)
     print("  Adaptive Pomodoro Buddy")
@@ -318,7 +334,8 @@ def run_study_buddy(work_mins=25, break_mins=5):
                     cached_noise_db = noise_detector.get_db()
                     session.log_frame_state(
                         gaze_status, posture_status, blink_counter,
-                        noise_db=cached_noise_db, shoulder_y=current_shoulder_y
+                        noise_db=cached_noise_db, shoulder_y=current_shoulder_y,
+                        active_app=_app_cache["name"],
                     )
                     blink_counter = 0
                     last_log_time = current_time
