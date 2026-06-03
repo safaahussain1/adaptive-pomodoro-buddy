@@ -45,18 +45,12 @@ def get_coaching_message(trigger: str, context: dict) -> str:
 
     description = TRIGGER_DESCRIPTIONS.get(trigger, f"a {trigger} event occurred")
 
-    prompt = f"""You are a warm, encouraging study coach embedded in a focus tracking app.
-The following event just occurred: {description}.
+    prompt = f"""You are a concise study coach in a focus tracking app.
+Event: {description}.
 
-Context:
-- Current focus density score: {focus:.0f}%
-- Time elapsed this session: {elapsed:.0f} minutes
-- Ambient noise level: {noise:.0f} dB
-- Most-used app: {app}
-- Blink rate: {blink_rate:.0f} blinks/min (normal is 15-20; low may mean fatigue)
+Context: focus={focus:.0f}%, elapsed={elapsed:.0f}min, noise={noise:.0f}dB, app={app}, blinks={blink_rate:.0f}/min (normal 15-20).
 
-Write a single, brief (2-3 sentence) message to the user. Be warm, specific, and actionable.
-No markdown. No bullet points. Speak directly to the user."""
+Reply with EXACTLY 2-3 bullet points using • as the bullet character. Each bullet is one short sentence (max 12 words). Be specific, warm, and actionable. No intro text, no markdown formatting, bullets only."""
 
     try:
         client = _get_model()

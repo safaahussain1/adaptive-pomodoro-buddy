@@ -81,8 +81,11 @@ def print_session_report(logs: list[dict]):
     print("=" * 55 + "\n")
 
 
-def save_session_report(logs: list[dict], out_dir: str = "."):
+def save_session_report(logs: list[dict], out_dir: str = ".",
+                        timer_history: list = None):
     summary = compute_session_summary(logs)
+    if timer_history:
+        summary["timer_history"] = [[ts, ev] for ts, ev in timer_history]
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
     path = os.path.join(out_dir, f"session_{ts}.json")
     with open(path, "w") as f:

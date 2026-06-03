@@ -152,9 +152,24 @@ def api_data():
     if avg_blink < 10:
         insights.append({"type": "warning", "text": f"Blink rate is low ({avg_blink:.0f}/min). Look away from the screen for 20 seconds every 20 minutes."})
 
+    # Adaptive timer events across all sessions
+    all_timer_events = []
+    for s in sessions:
+        raw = s["logs"]
+        # New-format sessions may have timer_history in summary
+        summary_data = {}
+        fname_path = os.path.join(SESSION_DIR, s["fname"])
+        with open(fname_path) as f:
+            raw_file = json.load(f)
+        if isinstance(raw_file, dict):
+            summary_data = raw_file.get("summary", {})
+        for ev in summary_data.get("timer_history", []):
+            all_timer_events.append(ev)
+
     return jsonify({
         "sessions": summaries,
         "trend": trend,
+        "timer_events": all_timer_events,
         "aggregates": {
             "avg_focus": round(avg_focus, 1),
             "avg_posture": round(avg_posture, 1),
@@ -198,25 +213,16 @@ def api_advice():
         best_hour = max(hour_focus, key=lambda h: sum(hour_focus[h]) / len(hour_focus[h])) if hour_focus else None
         trend_str = " → ".join(f"{s['overall_focus_pct']:.0f}%" for s in summaries[-5:])
 
-        prompt = f"""You are a personal productivity coach. A student has been using an adaptive Pomodoro study tool.
-Here is their aggregated data across {len(summaries)} study session(s):
+        prompt = f"""You are a concise productivity coach. A student used an adaptive Pomodoro tool.
 
-- Average focus density: {avg_focus:.1f}%
-- Average good posture rate: {avg_posture:.1f}%
-- Average ambient noise: {avg_noise:.1f} dB
-- Average blink rate: {avg_blink:.1f} blinks/min (normal is 15-20)
-- Most productive hour: {best_hour}:00
-- Most-used apps: {top_apps}
-- Focus trend (oldest → newest): {trend_str}
+Data across {len(summaries)} session(s):
+- Avg focus: {avg_focus:.1f}% | Avg posture: {avg_posture:.1f}% | Avg noise: {avg_noise:.1f} dB
+- Avg blink rate: {avg_blink:.1f}/min (normal 15-20) | Best hour: {best_hour}:00
+- Top apps: {top_apps} | Focus trend: {trend_str}
 
-Write a personal, specific 5–6 sentence coaching note. Cover:
-1. Their biggest strength based on the data
-2. Their most important area to improve with a concrete tip
-3. Best time of day for deep work (based on hourly data)
-4. One specific environmental or behavioral change for next session
-5. An encouraging closing sentence
-
-Be direct, warm, and specific. No bullet points. No markdown. Write as flowing paragraphs."""
+Write exactly 4 bullet points using • as the bullet. Each bullet is 1-2 short sentences max.
+Cover: strength, biggest improvement area + tip, best study time, one environmental change.
+No intro, no headers, bullets only. Be specific and data-driven."""
 
         client = _get_model()
         from llm_coach import MODEL

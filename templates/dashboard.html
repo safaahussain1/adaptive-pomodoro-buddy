@@ -196,6 +196,14 @@
     </div>
   </div>
 
+  <!-- Adaptive timer proof -->
+  <div class="card" style="margin-bottom:20px">
+    <h2>Adaptive Timer Log — Proof of Dynamic Adjustment</h2>
+    <div id="timer-events-wrap">
+      <div style="color:var(--muted);font-size:0.85rem">No timer adjustments yet. Run sessions to see flow extensions and early breaks.</div>
+    </div>
+  </div>
+
   <!-- Session history table -->
   <div class="card" style="margin-bottom:20px">
     <h2>Session History</h2>
@@ -385,6 +393,9 @@ async function fetchData() {
     }
   });
 
+  // ── Timer events ──
+  renderTimerEvents(data.timer_events || []);
+
   // ── Session table ──
   const tw = document.getElementById("table-wrap");
   if (!sessions.length) {
@@ -428,7 +439,11 @@ async function fetchAdvice() {
     const data = await res.json();
     box.style.fontStyle = "normal";
     box.style.color = "var(--text)";
-    box.textContent = data.advice;
+    // Render each bullet on its own line
+    box.innerHTML = data.advice
+      .split(/•/).filter(s => s.trim())
+      .map(s => `<div style="display:flex;gap:8px;margin-bottom:6px"><span style="color:#7c3aed;flex-shrink:0">•</span><span>${s.trim()}</span></div>`)
+      .join("");
     btn.innerHTML = "Refresh Advice";
     btn.disabled = false;
   } catch (e) {
@@ -437,6 +452,31 @@ async function fetchAdvice() {
     btn.disabled = false;
   }
 }
+
+  // ── Adaptive timer log ──────────────────────────────────────────────
+  const timerTypes = {
+    "Early break": { color: "#ef4444", icon: "⚡" },
+    "Flow extension": { color: "#10b981", icon: "🔥" },
+    "WORK→BREAK": { color: "#f59e0b", icon: "☕" },
+    "BREAK→WORK": { color: "#06b6d4", icon: "💼" },
+    "Extended": { color: "#8b5cf6", icon: "➕" },
+  };
+  function renderTimerEvents(events) {
+    const wrap = document.getElementById("timer-events-wrap");
+    if (!events || !events.length) return;
+    const rows = events.slice(-20).reverse().map(([ts, ev]) => {
+      const date = new Date(ts * 1000).toLocaleString();
+      let icon = "•", color = "var(--muted)";
+      for (const [key, val] of Object.entries(timerTypes)) {
+        if (ev.includes(key)) { icon = val.icon; color = val.color; break; }
+      }
+      return `<tr>
+        <td style="color:var(--muted);font-size:0.8rem;white-space:nowrap">${date}</td>
+        <td><span style="color:${color};font-size:1rem;margin-right:6px">${icon}</span>${ev}</td>
+      </tr>`;
+    }).join("");
+    wrap.innerHTML = `<table><thead><tr><th>Time</th><th>Adjustment</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
 
 fetchData();
 setInterval(fetchData, 60000);

@@ -34,8 +34,8 @@ class PomodoroSessionManager:
         self.POSTURE_NUDGE_COOLDOWN = 120        # 2 minutes between posture nudges
         self.FOCUS_INTERVENTION_COOLDOWN = 60    # 1 minute between focus interventions
 
-        # Dynamic timer change log for HUD display
-        self.timer_events = []                   # list of (timestamp, description)
+        # Adaptive timer history — proof that durations change based on focus
+        self.timer_history = []   # (timestamp, description_str)
 
     # ------------------------------------------------------------------
     def get_active_window_macos(self):
@@ -123,16 +123,22 @@ class PomodoroSessionManager:
         # 2. Early break — focus < 35% after halfway through block
         if elapsed > self.work_duration_seconds / 2 and rolling_focus < 35.0:
             self._last_focus_intervention_time = now
+            old_elapsed = int(elapsed // 60)
             self.is_working = False
             self.block_start_time = now
-            self.timer_events.append((now, "Early break triggered (low focus)"))
+            entry = (f"Early break at {old_elapsed}m "
+                     f"(focus={rolling_focus:.0f}%, was {self.work_duration_seconds // 60}m block)")
+            self.timer_history.append((now, entry))
             return "EARLY_BREAK"
 
         # 3. Flow extension — high focus when timer is almost done
         if time_left <= 30 and rolling_focus >= 80.0:
             self._last_focus_intervention_time = now
+            old_dur = self.work_duration_seconds // 60
             self.work_duration_seconds += 300
-            self.timer_events.append((now, f"Flow extension +5 min (focus {rolling_focus:.0f}%)"))
+            new_dur = self.work_duration_seconds // 60
+            entry = f"Flow extension {old_dur}m→{new_dur}m (focus={rolling_focus:.0f}%)"
+            self.timer_history.append((now, entry))
             return "FLOW_EXTENSION"
 
         return None
