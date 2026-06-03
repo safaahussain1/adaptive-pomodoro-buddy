@@ -184,3 +184,11 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+# Node / npm (pptxgenjs dependencies)
+node_modules/
+package-lock.json
+package.json
+
+# Temporary files from slide QA
+*.pdf
+slide-*.jpg
