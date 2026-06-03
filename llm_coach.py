@@ -34,7 +34,7 @@ FALLBACKS = {
     "PHONE_DETECTED": "Put the phone down — you're in a work block. Refocus!",
 }
 
-MODEL = "gemini-2.0-flash"
+MODEL = "models/gemini-2.5-flash-lite"
 
 def get_coaching_message(trigger: str, context: dict) -> str:
     focus      = context.get("focus_score", 50)
