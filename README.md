@@ -1,42 +1,60 @@
-# Adaptive Cognitive-State Pomodoro Buddy
+# Adaptive Cognitive-State Pomodoro Study Buddy
 
-A real-time, AI-powered productivity tool that continuously senses your cognitive state — gaze, posture, blink rate, and ambient noise — and dynamically adapts your study/break intervals using a rule-based adaptive engine and a Claude-powered personal coach.
+A real-time AI productivity tool that continuously senses your cognitive state — gaze, posture, blink rate, ambient noise, and phone use — and dynamically adapts your study/break timing using a rule-based adaptive engine and a Gemini-powered personal coach.
 
 ---
 
 ## Demo
 
-> Run `python tracker.py` — a webcam window appears showing your live focus density, posture status, ambient noise level, and an adaptive Pomodoro timer. When focus drops or posture slips, Claude generates a personalized coaching message directly on screen.
+Run `venv/bin/python tracker.py --work 5 --break 2` for a quick demo. A webcam window shows live focus density, posture status, ambient noise, and an adaptive timer. When focus drops, posture slips, or your phone appears, a personalized coaching message fires on-screen and as a macOS notification. Press **Q** or **Esc** to stop.
 
 ---
 
 ## Features
 
-| Sensor / Module | What it tracks |
+### Real-Time Sensing
+
+| Sensor | What It Tracks |
 |---|---|
-| **Gaze tracking** (MediaPipe FaceMesh) | Whether your eyes are on-screen or looking away |
-| **Posture detection** (MediaPipe Pose) | Shoulder alignment to detect slouching |
-| **Blink rate** (EAR algorithm) | Eye Aspect Ratio for fatigue indication |
-| **Active app** (macOS AppKit) | Whether the foreground app is productive |
-| **Ambient noise** (microphone + sounddevice) | Background dB level that correlates with distraction |
+| **Gaze** (MediaPipe FaceMesh, 478 landmarks) | Iris x-position → on-screen vs. looking away |
+| **Blink rate** (Eye Aspect Ratio) | Fatigue indicator — normal is 15–20 blinks/min |
+| **Posture** (MediaPipe Pose) | Shoulder Y-delta vs. per-session calibrated baseline |
+| **Phone detection** (MediaPipe Hands) | Hand visible ≥ 3 continuous seconds during work block |
+| **Active app** (macOS AppKit, bg thread) | Productive vs. distracting app classification |
+| **Ambient noise** (sounddevice, bg thread) | RMS → dB SPL, classified as Quiet / Moderate / Loud |
 
-### Adaptive timer logic
+### Adaptive Timer (4 Decision Rules)
 
-- **Early break**: if focus < 35% past the halfway point of a work block, an early break is triggered
-- **Flow extension**: if focus ≥ 85% when the timer is about to end, the work session is extended 5 minutes
-- **Posture nudge**: if slouching > 70% of the last 30 seconds, an alert fires
+| Trigger | Condition | Result |
+|---|---|---|
+| **Early break** | focus < 35% AND elapsed > 50% of block | Immediate break, LLM coaching message |
+| **Flow extension** | focus ≥ 80% AND time left ≤ 30s | +5 min added (stackable), LLM coaching |
+| **Posture nudge** | slouching > 70% of last 30s | LLM coaching (2-min cooldown) |
+| **Phone detected** | hand visible ≥ 3s during work | LLM coaching message |
 
-### LLM coaching (Claude Haiku)
+Press **E** at any time during a work block to manually extend +5 minutes. All timer changes are logged in `timer_history` with timestamp and reason.
 
-Every intervention triggers an async call to Claude Haiku (`claude-haiku-4-5-20251001`). Claude receives your current focus score, app usage, blink rate, and noise level, and writes a warm, specific 2–3 sentence coaching message displayed as an overlay on the video feed. An end-of-session summary message is also generated.
+### Break Mode
 
-### Session analytics
+Break screen uses a distinct green HUD — no focus score shown, rotating relaxation tips (20-ft eye rule, breathing, hydration), and gentle posture reminders. Transition between blocks includes an 8-second overlay, an audible tone (`Glass.aiff` → break, `Ping.aiff` → work), and macOS notification.
 
-At the end of each session, a detailed report is printed to the terminal and saved as `session_<timestamp>.json`:
-- Overall and work-only focus percentages
-- Good posture rate
-- Average ambient noise
-- App usage breakdown
+### Gemini AI Coach
+
+Every intervention triggers an async call to `gemini-2.5-flash-lite`. The model receives your real-time focus score, blink rate, noise level, and app context, and returns 2–3 bullet coaching messages. Calls run in daemon threads — zero blocking of the 30fps video loop. Messages appear as:
+- Camera feed overlay (bottom strip)
+- macOS native notification
+- Floating always-on-top window (`overlay.py`)
+
+### Web Dashboard
+
+`venv/bin/python web_dashboard.py` → open `http://localhost:5050` in any browser.
+
+- **Focus trend** line chart (per-session, chronological)
+- **Hourly productivity** bar chart (your personal peak hours)
+- **App usage** doughnut chart
+- **Session comparison** grouped bars (focus% vs posture%)
+- **Adaptive Timer Log** — every timer change with timestamp, reason, and focus score
+- **AI personalized advice** — on-demand Gemini coaching based on all historical data
 
 ---
 
@@ -45,9 +63,9 @@ At the end of each session, a detailed report is printed to the terminal and sav
 ### Prerequisites
 
 - Python 3.11+
-- macOS (for active-window detection via AppKit; Linux/Windows users can remove that feature)
-- A webcam and microphone
-- An Anthropic API key
+- macOS (for active-window detection via AppKit and audio tones)
+- Webcam and microphone
+- A Gemini API key (free at [aistudio.google.com](https://aistudio.google.com))
 
 ### Install
 
@@ -59,19 +77,32 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Set your API key
+### Configure API Key
 
 ```bash
-export ANTHROPIC_API_KEY="sk-ant-..."
+echo 'GEMINI_API_KEY=your-key-here' > .env
 ```
+
+The `.env` file is gitignored — your key never leaves your machine.
 
 ### Run
 
 ```bash
-python tracker.py
-```
+# Main tracker (25-min work / 5-min break)
+venv/bin/python tracker.py
 
-Press **Q** to stop the session and view the analytics report.
+# Short test session (5-min work / 2-min break)
+venv/bin/python tracker.py --work 5 --break 2
+
+# Web dashboard (any browser)
+venv/bin/python web_dashboard.py   # → http://localhost:5050
+
+# Floating coaching overlay (separate terminal)
+venv/bin/python overlay.py
+
+# Terminal analytics dashboard
+venv/bin/python dashboard.py --advice
+```
 
 ---
 
@@ -79,89 +110,57 @@ Press **Q** to stop the session and view the analytics report.
 
 ```
 adaptive-pomodoro-buddy/
-├── tracker.py            # Main entry point — webcam loop, display, wires everything together
-├── session_manager.py    # Pomodoro timer, per-frame data logging, intervention rules
-├── llm_coach.py          # Claude API integration for personalized coaching messages
-├── noise_detector.py     # Background microphone thread measuring ambient dB
-├── analytics.py          # Post-session summary and JSON report generation
+├── tracker.py             # Main loop — CV pipeline, HUD, adaptive rules, demo entry point
+├── session_manager.py     # Focus scoring, intervention rules, timer_history logging
+├── llm_coach.py           # Gemini API integration (google-genai), async coaching messages
+├── noise_detector.py      # sounddevice background thread, RMS → dB measurement
+├── analytics.py           # Post-session reports, JSON export, session aggregation
+├── web_dashboard.py       # Flask server + API endpoints for the web dashboard
+├── dashboard.py           # Terminal analytics dashboard with AI advice
+├── overlay.py             # Always-on-top tkinter coaching window
+├── templates/
+│   └── dashboard.html     # Chart.js web dashboard (dark theme)
 ├── requirements.txt
+├── .env.example
 └── README.md
-```
-
----
-
-## Architecture
-
-```
-Webcam (30 fps)
-    │
-    ▼
-MediaPipe FaceMesh ──► gaze_status, EAR (blink)
-MediaPipe Pose     ──► posture_status
-                             │
-Microphone ──► noise_detector.py (background thread)
-macOS AppKit ──► active window (1 Hz polling)
-                             │
-                             ▼
-                    session_manager.py
-                    ┌────────────────────────────────────┐
-                    │  log_frame_state()  → history_logs │
-                    │  compute_focus_score()              │
-                    │  evaluate_interventions()           │
-                    │    • POSTURE_NUDGE                  │
-                    │    • EARLY_BREAK                    │
-                    │    • FLOW_EXTENSION                 │
-                    └──────────────┬─────────────────────┘
-                                   │ trigger + context
-                                   ▼
-                            llm_coach.py
-                            Claude Haiku API call (async thread)
-                                   │
-                                   ▼
-                          coaching message overlay
-                          displayed on video feed
-                                   │
-                          (on Q press)
-                                   ▼
-                            analytics.py
-                            terminal report + session_<ts>.json
 ```
 
 ---
 
 ## Configuration
 
-You can adjust these constants in `tracker.py` and `session_manager.py`:
-
-| Parameter | Default | Description |
-|---|---|---|
-| `work_duration_mins` | 25 | Standard work block length |
-| `break_duration_mins` | 5 | Standard break length |
-| `EAR_THRESHOLD` | 0.21 | Eye closure threshold for blink detection |
-| `LLM_DISPLAY_SECONDS` | 10 | How long coaching messages stay on screen |
-| `productive_apps` | see code | Apps counted as productive for focus score |
+| Parameter | Default | Location | Description |
+|---|---|---|---|
+| `--work` | 25 | CLI arg | Work block length in minutes |
+| `--break` | 5 | CLI arg | Break length in minutes |
+| `EAR_THRESHOLD` | 0.21 | tracker.py | Eye closure threshold for blink detection |
+| `SLOUCH_DELTA` | 0.06 | session_manager.py | How far below calibrated baseline = slouching |
+| `PRODUCTIVE_APPS` | see code | session_manager.py | Apps that count toward focus score |
+| `POSTURE_NUDGE_COOLDOWN` | 120s | session_manager.py | Minimum time between posture nudges |
 
 ---
 
 ## Evaluation & Limitations
 
-- **Focus score** is a composite of gaze direction + productive app usage, sampled at 1 Hz. It approximates cognitive engagement rather than measuring it directly.
-- **Blink rate** interpretation: typical range is 15–20 blinks/min; sustained low rates may indicate screen fatigue; very high rates may indicate sleepiness.
-- **Noise calibration**: the dB estimate from `sounddevice` is relative, not absolute. Treat thresholds as relative indicators, not acoustic measurements.
-- **Posture**: shoulder Y-position threshold (0.65 in normalized coordinates) was empirically tuned — may need adjustment depending on camera angle and seating height.
-- **LLM latency**: Claude Haiku responses take ~0.5–2 s. The coaching message appears on screen once the response returns, with no blocking of the video loop.
+- **Focus score** is a weighted composite: gaze on screen + productive app = 100%, gaze on screen + unknown app = 60%, gaze away = 0%. Approximates engagement, not a direct cognitive measure.
+- **Posture baseline** is calibrated at session start — sit up straight for 5 seconds. Shoulder Y-delta threshold avoids false positives from camera angle variation.
+- **Phone detection** uses a 3-second accumulator to reduce false positives from brief hand movements. False-positive rate reduced from ~40% (instant gaze heuristic) to <5%.
+- **Gaze range** is intentionally wide (iris x: 0.28–0.72) to accommodate natural screen-reading movement without flagging normal eye behavior.
+- **Gemini latency** is 0.5–2s. Coaching messages appear once the response returns; no blocking of the video loop.
+- **Noise calibration** is relative, not absolute dB SPL. Use values comparatively across sessions, not as a reference measurement.
 
 ---
 
 ## AI Usage Disclosure
 
-This project makes extensive use of AI tools:
+This project uses AI tools throughout:
 
-- **Claude Code (Anthropic)** was used to scaffold modules, implement the noise detector, analytics reporter, and LLM coach integration, and to write this README.
-- **Claude Haiku** (`claude-haiku-4-5-20251001`) is called at runtime for personalized coaching messages.
-- **MediaPipe** (Google) provides pre-trained models for face mesh and pose estimation.
+- **Claude Code (Anthropic)** was used for development assistance, module scaffolding, bug fixing, and documentation throughout this project.
+- **Gemini 2.5 Flash Lite** (`models/gemini-2.5-flash-lite`) is called at runtime for personalized coaching messages and dashboard advice.
+- **MediaPipe** (Google) provides pre-trained models for face mesh, pose estimation, and hand detection.
+- **Chart.js** powers the web dashboard visualizations.
 
-All substantial architectural decisions, feature selection, sensor integration, and adaptive logic design were made by the author.
+All architectural decisions, feature design, sensor integration choices, and adaptive logic were designed by the author.
 
 ---
 
