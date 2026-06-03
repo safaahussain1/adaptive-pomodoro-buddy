@@ -14,8 +14,7 @@ from collections import defaultdict, Counter
 from analytics import load_all_sessions, compute_session_summary
 
 try:
-    from llm_coach import _get_client
-    import anthropic
+    from llm_coach import _get_model
     _LLM_AVAILABLE = True
 except Exception:
     _LLM_AVAILABLE = False
@@ -210,15 +209,11 @@ Write a personal, specific 4–6 sentence coaching note for this student. Cover:
 Be direct, warm, and specific. No bullet points. No markdown."""
 
     try:
-        client = _get_client()
-        resp = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=300,
-            messages=[{"role": "user", "content": prompt}],
-        )
+        model = _get_model()
+        resp = model.generate_content(prompt)
         print("\n  PERSONAL AI ADVICE")
         print("  " + "-" * 62)
-        for line in resp.content[0].text.strip().split("\n"):
+        for line in resp.text.strip().split("\n"):
             print(f"  {line}")
         print()
     except Exception as e:

@@ -1,74 +1,65 @@
-import anthropic
 import os
+import google.generativeai as genai
 from dotenv import load_dotenv
 
-load_dotenv()  # reads .env file if present
+load_dotenv()
 
-_client = None
+_model = None
 
-def _get_client():
-    global _client
-    if _client is None:
-        key = os.environ.get("ANTHROPIC_API_KEY")
+def _get_model():
+    global _model
+    if _model is None:
+        key = os.environ.get("GEMINI_API_KEY")
         if not key:
             raise RuntimeError(
-                "ANTHROPIC_API_KEY not set. Add it to a .env file or export it:\n"
-                "  echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env"
+                "GEMINI_API_KEY not set. Add it to a .env file:\n"
+                "  echo 'GEMINI_API_KEY=your-key-here' > .env"
             )
-        _client = anthropic.Anthropic(api_key=key)
-    return _client
+        genai.configure(api_key=key)
+        _model = genai.GenerativeModel("gemini-2.0-flash")
+    return _model
+
+TRIGGER_DESCRIPTIONS = {
+    "POSTURE_NUDGE":   "the user has been slouching for more than 70% of the last 30 seconds",
+    "EARLY_BREAK":     "the user's focus has dropped significantly — triggering an early break",
+    "FLOW_EXTENSION":  "the user is in a deep flow state — extending the work session by 5 minutes",
+    "SESSION_END":     "the user just completed a full study session",
+    "PHONE_DETECTED":  "the user's hand is visible and their gaze is away from the screen — likely on their phone during a work block",
+}
+
+FALLBACKS = {
+    "POSTURE_NUDGE":  "You've been slouching — sit up straight and take a breath!",
+    "EARLY_BREAK":    "Your focus has dipped. Take a short break — you've earned it.",
+    "FLOW_EXTENSION": "You're in the zone! Extending your session by 5 minutes.",
+    "SESSION_END":    "Great session! Take a moment to review what you accomplished.",
+    "PHONE_DETECTED": "Put the phone down — you're in a work block. Refocus!",
+}
 
 def get_coaching_message(trigger: str, context: dict) -> str:
-    """
-    Generate a personalized coaching message from Claude given a trigger and session context.
-
-    Args:
-        trigger: One of POSTURE_NUDGE, EARLY_BREAK, FLOW_EXTENSION, SESSION_END
-        context: Dict with keys like focus_score, elapsed_mins, noise_level, top_app, blink_rate
-    """
-    focus = context.get("focus_score", 50)
-    elapsed = context.get("elapsed_mins", 0)
-    noise = context.get("noise_level_db", 40)
-    app = context.get("top_app", "Unknown")
+    focus      = context.get("focus_score", 50)
+    elapsed    = context.get("elapsed_mins", 0)
+    noise      = context.get("noise_level_db", 40)
+    app        = context.get("top_app", "Unknown")
     blink_rate = context.get("blink_rate_per_min", 15)
 
-    trigger_descriptions = {
-        "POSTURE_NUDGE": "the user has been slouching for more than 70% of the last 30 seconds",
-        "EARLY_BREAK": f"the user's focus dropped to {focus:.0f}% with {elapsed:.0f} minutes elapsed — triggering an early break",
-        "FLOW_EXTENSION": f"the user is in a deep flow state with {focus:.0f}% focus — extending the work session",
-        "SESSION_END": f"the user just completed a full study session of {elapsed:.0f} minutes",
-        "PHONE_DETECTED": "the user's hand is visible in the camera and their gaze is away from the screen — they are likely on their phone during a work block",
-    }
-
-    description = trigger_descriptions.get(trigger, f"a {trigger} event occurred")
+    description = TRIGGER_DESCRIPTIONS.get(trigger, f"a {trigger} event occurred")
 
     prompt = f"""You are a warm, encouraging study coach embedded in a focus tracking app.
 The following event just occurred: {description}.
 
-Additional context:
+Context:
 - Current focus density score: {focus:.0f}%
+- Time elapsed this session: {elapsed:.0f} minutes
 - Ambient noise level: {noise:.0f} dB
-- Most-used app in this session: {app}
-- Blink rate: {blink_rate:.0f} blinks/min (normal is ~15–20; very high may indicate fatigue)
+- Most-used app: {app}
+- Blink rate: {blink_rate:.0f} blinks/min (normal is 15-20; low may mean fatigue)
 
-Write a single, brief (2–3 sentence) message to the user. Be warm, specific, and actionable.
-Do NOT use markdown. Do NOT use bullet points. Speak directly to the user."""
+Write a single, brief (2-3 sentence) message to the user. Be warm, specific, and actionable.
+No markdown. No bullet points. Speak directly to the user."""
 
     try:
-        client = _get_client()
-        response = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=150,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return response.content[0].text.strip()
-    except Exception as e:
-        # Fallback messages if API unavailable
-        fallbacks = {
-            "POSTURE_NUDGE": "Hey, you've been slouching — sit up straight and take a breath!",
-            "EARLY_BREAK": "Your focus has dipped. Take a short break — you've earned it.",
-            "FLOW_EXTENSION": "You're in the zone! Extending your session by 5 minutes.",
-            "SESSION_END": "Great session! Review what you accomplished before jumping into the next one.",
-            "PHONE_DETECTED": "Put the phone down — you're in a work block. Refocus!",
-        }
-        return fallbacks.get(trigger, "Keep going — you're doing great!")
+        model = _get_model()
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except Exception:
+        return FALLBACKS.get(trigger, "Keep going — you're doing great!")

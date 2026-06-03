@@ -171,9 +171,9 @@ def api_data():
 
 @app.route("/api/advice")
 def api_advice():
-    """Generate personalized LLM advice (called on demand)."""
+    """Generate personalized advice via Gemini (called on demand)."""
     try:
-        from llm_coach import _get_client
+        from llm_coach import _get_model
         sessions = load_sessions()
         summaries = [compute_summary(s["logs"]) for s in sessions]
         summaries = [s for s in summaries if s]
@@ -218,13 +218,9 @@ Write a personal, specific 5–6 sentence coaching note. Cover:
 
 Be direct, warm, and specific. No bullet points. No markdown. Write as flowing paragraphs."""
 
-        client = _get_client()
-        resp = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=400,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return jsonify({"advice": resp.content[0].text.strip()})
+        model = _get_model()
+        resp = model.generate_content(prompt)
+        return jsonify({"advice": resp.text.strip()})
     except Exception as e:
         return jsonify({"advice": f"Could not generate advice: {e}"}), 500
 
