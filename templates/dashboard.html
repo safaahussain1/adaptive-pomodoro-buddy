@@ -214,6 +214,13 @@
 </div>
 
 <script>
+function to12h(h) {
+  if (h === 0) return "12 AM";
+  if (h < 12) return `${h} AM`;
+  if (h === 12) return "12 PM";
+  return `${h - 12} PM`;
+}
+
 const CHART_DEFAULTS = {
   color: "#94a3b8",
   borderColor: "#1e1e40",
@@ -260,7 +267,7 @@ async function fetchData() {
   document.getElementById("s-posture").textContent = agg.avg_posture != null ? agg.avg_posture.toFixed(0) + "%" : "—";
   document.getElementById("s-time").textContent = agg.total_mins != null ? Math.round(agg.total_mins) + "m" : "—";
   document.getElementById("s-sessions").textContent = `${agg.session_count || 0} session${agg.session_count !== 1 ? "s" : ""}`;
-  document.getElementById("s-hour").textContent = agg.best_hour != null ? `${agg.best_hour}:00` : "—";
+  document.getElementById("s-hour").textContent = agg.best_hour != null ? to12h(agg.best_hour) : "—";
 
   // ── Insights ──
   const insightColors = { strength: "#10b981", warning: "#ef4444", tip: "#7c3aed" };
@@ -343,7 +350,7 @@ async function fetchData() {
 
   // ── Hourly bar ──
   const hourly = data.hourly || {};
-  const hourLabels = Object.keys(hourly).map(h => `${h}:00`);
+  const hourLabels = Object.keys(hourly).map(h => to12h(parseInt(h)));
   const hourValues = Object.values(hourly);
   if (hourChart) hourChart.destroy();
   hourChart = new Chart(document.getElementById("hour-chart"), {

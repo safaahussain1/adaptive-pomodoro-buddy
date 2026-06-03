@@ -227,7 +227,7 @@ def teardown(session, noise_detector, cap):
     if session.timer_history:
         print("\n[Adaptive Timer Log]")
         for ts, ev in session.timer_history:
-            print(f"  {time.strftime('%H:%M:%S', time.localtime(ts))}  {ev}")
+            print(f"  {time.strftime('%I:%M:%S %p', time.localtime(ts))}  {ev}")
 
     if work_logs:
         ctx = {
@@ -463,7 +463,7 @@ def run_study_buddy(work_mins=25, break_mins=5):
                     if not session.is_working:
                         break_tip = random.choice(BREAK_TIPS)
                     session.timer_history.append((current_time,
-                        f"{'WORK→BREAK' if session.is_working else 'BREAK→WORK'} at {time.strftime('%H:%M')}"))
+                        f"{'WORK→BREAK' if session.is_working else 'BREAK→WORK'} at {time.strftime('%I:%M %p')}"))
 
                 # Actually flip the block after transition overlay
                 if in_transition:
