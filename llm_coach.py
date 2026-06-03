@@ -28,6 +28,7 @@ def get_coaching_message(trigger: str, context: dict) -> str:
         "EARLY_BREAK": f"the user's focus dropped to {focus:.0f}% with {elapsed:.0f} minutes elapsed — triggering an early break",
         "FLOW_EXTENSION": f"the user is in a deep flow state with {focus:.0f}% focus — extending the work session",
         "SESSION_END": f"the user just completed a full study session of {elapsed:.0f} minutes",
+        "PHONE_DETECTED": "the user's hand is visible in the camera and their gaze is away from the screen — they are likely on their phone during a work block",
     }
 
     description = trigger_descriptions.get(trigger, f"a {trigger} event occurred")
@@ -59,5 +60,6 @@ Do NOT use markdown. Do NOT use bullet points. Speak directly to the user."""
             "EARLY_BREAK": "Your focus has dipped. Take a short break — you've earned it.",
             "FLOW_EXTENSION": "You're in the zone! Extending your session by 5 minutes.",
             "SESSION_END": "Great session! Review what you accomplished before jumping into the next one.",
+            "PHONE_DETECTED": "Put the phone down — you're in a work block. Refocus!",
         }
         return fallbacks.get(trigger, "Keep going — you're doing great!")
