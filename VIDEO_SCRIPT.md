@@ -136,12 +136,12 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 
 ---
 
-### SCENE 9 — [SLIDE 10: Future Work] — 2:38–2:52
+### SCENE 9 — [SLIDE 10: Future Work] — 2:38–2:55
 **Q4: What more would you add?**
 
-> "At the top of my list: replacing the rule-based logic with a reinforcement learning policy that learns your optimal session lengths from your own history. And a baseline A/B mode — fixed 25/5 sessions alongside adaptive ones, on the same user, measuring which actually produces higher sustained focus. The sensor infrastructure is built. The data is already being collected."
+> "There's a lot more I'd build with more time. At the top of my list: replacing the rule-based logic with a reinforcement learning policy — where the state is your current focus score, blink rate, noise level, and time of day, and the reward is sustained focus improvement across intervals. I'd also add ambient noise classification — distinguishing speech from music from background hum using a small audio CNN, rather than just measuring raw dB. And a baseline A/B comparison mode: run fixed 25/5 sessions and adaptive sessions with the same user under the same conditions, and let the dashboard show statistically which produces higher sustained focus. The sensor infrastructure is already built. The data pipeline is already running."
 
-*Walk through the numbered list on slide 10.*
+*Walk slowly through each numbered item on slide 10 as you mention it.*
 
 ---
 
@@ -178,6 +178,6 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 | 10 | Future work | 9 | Q4 |
 | 11 | Closing | 10 | — |
 
-> **Note on timing:** this script is approximately 3:05 — trim Scene 3 voiceover slightly if needed, or cut to the dashboard recording right after the architecture diagram without elaborating on the JSON structure.
+ > **Note on timing:** this script runs approximately 3:10–3:20. The video can run slightly over 3 minutes — do not cut any scenes.
 
 > Slides 3–8 are for reference and deeper explanation — you don't need to show all of them in the 3-minute video. The live demo covers what they describe better than showing the slides would.
