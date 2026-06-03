@@ -21,7 +21,7 @@ class PomodoroSessionManager:
         except Exception:
             return "Unknown"
 
-    def log_frame_state(self, gaze_status, posture_status, blink_count):
+    def log_frame_state(self, gaze_status, posture_status, blink_count, noise_db=40.0):
         """Appends comprehensive vision and OS context to our analytics matrix."""
         timestamp = time.time()
         active_app = self.get_active_window_macos()
@@ -47,7 +47,8 @@ class PomodoroSessionManager:
             "posture_score": posture_numeric,
             "blinks_in_last_sec": blink_count,
             "active_app": active_app,
-            "window_is_productive": window_is_productive
+            "window_is_productive": window_is_productive,
+            "noise_db": noise_db,
         }
         
         self.history_logs.append(data_point)
