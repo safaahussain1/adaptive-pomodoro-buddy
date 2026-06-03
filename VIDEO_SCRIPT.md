@@ -60,16 +60,30 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 
 ---
 
-### SCENE 3 — [SCREEN RECORDING: tracker.py running] — 0:35–1:00
-**Q2: How exactly does it work? — Sensing pipeline**
+### SCENE 3 — [SLIDE 4: Architecture] — 0:35–0:58
+**Q2: Product architecture and deployment**
 
-> "So I built a tool that actually looks at you while you study. It uses Google MediaPipe to track your gaze direction and blink rate through your webcam — detecting both focus and fatigue. It reads your shoulder alignment to detect slouching. Your microphone measures ambient noise levels every second. And your active application is monitored in the background."
+> "The architecture is fully local — no video ever leaves your machine. Everything runs in a single Python process on your laptop. At the core is a 30-frames-per-second OpenCV loop on the main thread. Three background threads run in parallel: a microphone thread measuring ambient noise every 200ms, an AppKit thread polling the active window every 2 seconds, and whenever an intervention fires, a daemon thread makes an async call to the Gemini API so the video loop is never blocked."
 
-*Show the camera window: face mesh overlay visible, posture skeleton, focus score ticking up as you look at camera with a productive app open.*
+*Show Slide 4 — the three-column architecture diagram. Point to INPUTS → CORE ENGINE → OUTPUTS.*
+
+> "Session data is written to local JSON files after each session. The web dashboard is a Flask server that reads those files — so you can leave it running in a browser tab all day and it auto-refreshes. There's no cloud, no account, no data leaving your computer. The only external call is to Gemini when a coaching message is triggered."
+
+*Still on Slide 4 or briefly show the session JSON structure in a terminal.*
 
 ---
 
-### SCENE 4 — [DEMO: trigger posture nudge — slouch 30s] — 1:00–1:15
+### SCENE 4 — [SCREEN RECORDING: tracker.py running] — 0:58–1:18
+**Q2 continued — live sensing pipeline**
+
+> "So here's what it looks like in practice. I run one command — `python tracker.py` — and a webcam window opens with a 5-second posture calibration that sets my personal baseline. Then it starts tracking. That face mesh overlay is 478 landmarks running in real time to extract gaze direction and blink rate. The skeleton is shoulder alignment — if my shoulders drop more than 6% below my calibrated baseline, it flags slouching."
+
+*Show the camera window: face mesh overlay, posture skeleton, focus score ticking up. Point out each element on screen.*
+
+---
+
+### SCENE 5 — [DEMO: trigger posture nudge — slouch 30s] — 1:18–1:32
+**Q2 continued — intervention system**
 **Q2 continued — intervention system**
 
 > "Every 3 seconds, the system evaluates your state against a set of adaptive rules. If I've been slouching for too long — watch what happens."
@@ -82,70 +96,65 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 
 ---
 
-### SCENE 5 — [DEMO: hold hand up 3 seconds] — 1:15–1:22
+### SCENE 5 — [DEMO: hold hand up 3 seconds] — 1:32–1:38
 **Q2 continued — phone detection**
 
-> "If a hand stays visible in the frame for more than 3 seconds during a work block, it flags potential phone use."
+> "And if a hand stays visible in frame for more than 3 seconds during a work block, it flags phone use."
 
-*Hold hand up. Show "PHONE DETECTED" appearing.*
+*Hold hand up. Show "PHONE DETECTED" appearing on HUD and as a notification.*
 
 ---
 
-### SCENE 6 — [DEMO: wait for transition overlay + sound] — 1:22–1:40
+### SCENE 6 — [DEMO: wait for transition overlay + sound] — 1:38–1:55
 **Q2 continued — adaptive timer + break UI**
 
-> "Here's the heart of the system — the timer itself adapts. When focus drops below 35% past the halfway point of a block, it triggers an early break before the timer expires. When I'm in deep flow, it extends the session automatically. And when a block ends, there's an 8-second transition with an audible tone — and I can press E to stay in the zone if I'm not ready to stop."
+> "The timer itself adapts. When focus drops below 35% past the halfway point, an early break is triggered before the clock runs out. When I'm in deep flow, it extends automatically. And at every transition, there's an 8-second overlay with an audible tone — I can press E to cancel the break and stay in the zone."
 
-*Let the 2-minute work timer expire. Show the full-screen "BREAK TIME!" overlay with countdown and chime sound. Then show the green break UI with relaxation tip.*
-
----
-
-### SCENE 7 — [SCREEN RECORDING: switch to web dashboard] — 1:40–2:10
-**Q2 continued — architecture & long-term analytics**
-
-> "All of this data feeds into a persistent web dashboard I built with Flask and Chart.js. You can see your focus trend across sessions, which hour of day you personally perform best, your app usage breakdown — and most importantly, the adaptive timer log. Every early break and flow extension is recorded here with a timestamp and the exact focus score that triggered it. This is the proof that the system isn't just running a fixed timer."
-
-*Scroll through the dashboard: focus trend chart → hourly productivity → adaptive timer log showing entries like "Early break at 3m (focus=30%)".*
+*Let the 2-minute timer expire. Show the full-screen "BREAK TIME!" overlay and chime. Then show the distinct green break UI with a relaxation tip.*
 
 ---
 
-### SCENE 8 — [DEMO: click Refresh Advice] — 2:10–2:22
-**Q2 continued — AI personalization**
+### SCENE 7 — [SCREEN RECORDING: web dashboard] — 1:55–2:22
+**Q2 continued — data layer, deployment, and AI personalization**
 
-> "And on demand, Gemini analyzes all your historical session data and generates personalized advice — specific to your patterns. Not generic tips."
+> "Everything is local-first. No cloud, no account. Session data writes to JSON files on your machine after each session. The web dashboard is a Flask server that reads those files — you run it once and open it in any browser tab. It shows your focus trend over time, which hour of day you personally peak, your app breakdown, and the adaptive timer log — every early break and flow extension timestamped with the triggering focus score. That's the auditable proof that the timer is dynamically adjusting."
 
-*Click the button. Show 4 bullets appearing one by one.*
+*Scroll through the dashboard: focus trend chart → hourly productivity bar chart → adaptive timer log with real entries.*
+
+> "On demand, Gemini reads your entire session history and generates personalized coaching advice — not generic tips, but data-driven observations about your specific patterns."
+
+*Click Refresh Advice. Show 4 bullet points loading and appearing.*
 
 ---
 
-### SCENE 9 — [SLIDE 9: Use Cases] — 2:22–2:38
+### SCENE 8 — [SLIDE 9: Use Cases] — 2:22–2:38
 **Q3: Potential use cases and impact**
 
-> "This tool is useful beyond just students. Remote workers can get data-backed evidence that home office noise is hurting their output. Researchers can use it as a non-invasive cognitive load sensor. Long-term, blink rate and posture trends could surface early burnout indicators before they become serious. My vision is a lightweight background agent that builds a true map of your cognitive patterns over weeks — not just individual sessions."
+> "This extends well beyond students. Remote workers can get data-backed evidence that their home environment is hurting focus. Researchers can use it as a non-invasive cognitive load sensor. Long-term blink rate and posture trends could surface early fatigue or burnout indicators before they become serious. My vision is a lightweight background agent that builds a true map of your cognitive patterns over weeks — not just one session."
 
 *Show slide 9 with the 4 use case cards.*
 
 ---
 
-### SCENE 10 — [SLIDE 10: Future Work] — 2:38–2:52
+### SCENE 9 — [SLIDE 10: Future Work] — 2:38–2:52
 **Q4: What more would you add?**
 
-> "There's a lot more I'd build with more time. At the top of my list: replacing the rule-based logic with a reinforcement learning policy that learns your optimal session lengths from your own data. And a baseline A/B comparison mode — running fixed 25/5 sessions alongside adaptive ones and measuring which actually produces higher focus. The foundation is here. The data is being collected."
+> "At the top of my list: replacing the rule-based logic with a reinforcement learning policy that learns your optimal session lengths from your own history. And a baseline A/B mode — fixed 25/5 sessions alongside adaptive ones, on the same user, measuring which actually produces higher sustained focus. The sensor infrastructure is built. The data is already being collected."
 
-*Walk through numbered items on slide 10.*
+*Walk through the numbered list on slide 10.*
 
 ---
 
-### SCENE 11 — [SLIDE 11: Closing] — 2:52–3:00
+### SCENE 10 — [SLIDE 11: Closing] — 2:52–3:00
 
-> "One person, one laptop, five sensors, a Gemini API key, and a real problem worth solving."
+> "One person, one laptop, five sensors, a free API key, and a real problem worth solving."
 
 ---
 
 ## Recording Tips
 
 - **Screen record at 1080p or higher** — the dashboard and camera window need to be legible
-- **Do scenes 4–8 in one continuous recording** — starting the tracker once and going through all demo moments in sequence looks most natural
+- **Do scenes 4–7 in one continuous recording** — starting the tracker once and going through all demo moments in sequence looks most natural; switch to the browser for Scene 7
 - **The macOS notification** appears automatically in the top-right corner — it will be captured in your screen recording without any extra effort
 - **If Gemini is rate-limited**, the fallback messages ("Put the phone down — you're in a work block. Refocus!") are clean and fine to use in the video
 - **For the dashboard recording**, scroll slowly — the Chart.js charts animate on load which looks great on camera
@@ -158,15 +167,17 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 | Slide | Content | Scene # | Q |
 |---|---|---|---|
 | 1 | Title + 5 sensors | 1 | Q1 |
-| 2 | The problem | 2 | Q1 |
+| 2 | The Problem | 2 | Q1 |
 | 3 | Solution: SENSE→SCORE→ADAPT→COACH | — | (reference only) |
-| 4 | Technical architecture | — | (reference only) |
-| 5 | Adaptive timer: 4 decision rules | — | (show during scene 6 if time) |
+| **4** | **Technical Architecture** | **3** | **Q2 — architecture** |
+| 5 | Adaptive timer: 4 decision rules | — | (reference only) |
 | 6 | AI coaching examples | — | (reference only) |
 | 7 | Web dashboard features | — | (reference only) |
 | 8 | Evaluation & evidence | — | (reference only) |
-| 9 | Use cases & impact | 9 | Q3 |
-| 10 | Future work | 10 | Q4 |
-| 11 | Closing | 11 | — |
+| 9 | Use cases & impact | 8 | Q3 |
+| 10 | Future work | 9 | Q4 |
+| 11 | Closing | 10 | — |
+
+> **Note on timing:** this script is approximately 3:05 — trim Scene 3 voiceover slightly if needed, or cut to the dashboard recording right after the architecture diagram without elaborating on the JSON structure.
 
 > Slides 3–8 are for reference and deeper explanation — you don't need to show all of them in the 3-minute video. The live demo covers what they describe better than showing the slides would.
