@@ -1,12 +1,21 @@
 import anthropic
 import os
+from dotenv import load_dotenv
+
+load_dotenv()  # reads .env file if present
 
 _client = None
 
 def _get_client():
     global _client
     if _client is None:
-        _client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+        key = os.environ.get("ANTHROPIC_API_KEY")
+        if not key:
+            raise RuntimeError(
+                "ANTHROPIC_API_KEY not set. Add it to a .env file or export it:\n"
+                "  echo 'ANTHROPIC_API_KEY=sk-ant-...' > .env"
+            )
+        _client = anthropic.Anthropic(api_key=key)
     return _client
 
 def get_coaching_message(trigger: str, context: dict) -> str:

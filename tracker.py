@@ -1,9 +1,17 @@
+import os
+# Must be set before cv2/mediapipe import to suppress double-free on macOS exit
+os.environ.setdefault("OBJC_DISABLE_INITIALIZE_FORK_SAFETY", "YES")
+
 import cv2
 import mediapipe as mp
 import time
 import math
 import threading
+import subprocess
 import sys
+from dotenv import load_dotenv
+load_dotenv()
+
 from session_manager import PomodoroSessionManager
 from noise_detector import AmbientNoiseDetector
 from analytics import print_session_report, save_session_report
@@ -31,13 +39,39 @@ def calculate_ear(landmarks, top_bottom_idx, left_right_idx):
     return vert / horiz if horiz != 0 else 0.0
 
 
+TRIGGER_TITLES = {
+    "POSTURE_NUDGE":   "Posture Check",
+    "EARLY_BREAK":     "Early Break Triggered",
+    "FLOW_EXTENSION":  "Flow Extension +5 min",
+    "SESSION_END":     "Session Complete",
+    "PHONE_DETECTED":  "Put the Phone Down",
+}
+
+def notify_macos(title: str, message: str):
+    """Send a native macOS notification (non-blocking)."""
+    safe_msg = message.replace('"', "'").replace("\\", "")
+    safe_title = title.replace('"', "'")
+    script = f'display notification "{safe_msg}" with title "Pomodoro Buddy" subtitle "{safe_title}"'
+    subprocess.Popen(["osascript", "-e", script],
+                     stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
 def fetch_llm_message_async(trigger, context, result_container):
     msg = get_coaching_message(trigger, context)
     result_container["message"] = msg
     result_container["trigger"] = trigger
     result_container["timestamp"] = time.time()
-    # Also print to terminal so it's visible on any screen
-    print(f"\n[Coach — {trigger}]\n  {msg}\n")
+    title = TRIGGER_TITLES.get(trigger, trigger)
+    print(f"\n[Coach — {title}]\n  {msg}\n")
+    notify_macos(title, msg)
+    # Write for overlay window
+    try:
+        import json as _json
+        with open(".overlay_msg", "w") as _f:
+            _json.dump({"message": msg, "trigger": trigger, "title": title,
+                        "ts": time.time()}, _f)
+    except Exception:
+        pass
 
 
 def draw_hud(frame, session, recent_focus, posture_status, display_app,
@@ -109,8 +143,8 @@ def draw_hud(frame, session, recent_focus, posture_status, display_app,
 
 def teardown(session, noise_detector, cap):
     noise_detector.stop()
+    cv2.destroyAllWindows()   # must come before cap.release() on macOS
     cap.release()
-    cv2.destroyAllWindows()
     print_session_report(session.history_logs)
     if session.history_logs:
         saved_path = save_session_report(session.history_logs)
@@ -331,6 +365,25 @@ def run_study_buddy(work_mins=25, break_mins=5):
                 )
 
                 cv2.imshow("Adaptive Pomodoro Buddy", frame)
+
+                # Keep overlay stats line fresh
+                if current_time - last_log_time < 0.1:  # just after a log tick
+                    try:
+                        import json as _json
+                        _mins, _secs = divmod(session.get_remaining_time(), 60)
+                        _stats = (f"{'WORK' if session.is_working else 'BREAK'} "
+                                  f"{_mins:02d}:{_secs:02d}  |  Focus {recent_focus:.0f}%  |  "
+                                  f"{noise_label}")
+                        _overlay_path = ".overlay_msg"
+                        if os.path.exists(_overlay_path):
+                            with open(_overlay_path) as _f:
+                                _data = _json.load(_f)
+                            _data["stats"] = _stats
+                            with open(_overlay_path, "w") as _f:
+                                _json.dump(_data, _f)
+                    except Exception:
+                        pass
+
                 key = cv2.waitKey(5) & 0xFF
                 if key == ord("q") or key == 27:
                     break
