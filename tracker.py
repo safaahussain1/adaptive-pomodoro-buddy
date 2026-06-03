@@ -1,6 +1,9 @@
 import os
-# Must be set before cv2/mediapipe import to suppress double-free on macOS exit
+# Suppress mediapipe/TF verbose graph logs and the macOS double-free crash
 os.environ.setdefault("OBJC_DISABLE_INITIALIZE_FORK_SAFETY", "YES")
+os.environ["GLOG_minloglevel"] = "3"          # silence mediapipe graph dump
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"      # silence TensorFlow info logs
+os.environ["MEDIAPIPE_DISABLE_GPU"] = "1"
 
 import cv2
 import mediapipe as mp
@@ -162,6 +165,8 @@ def teardown(session, noise_detector, cap):
         print("\n[Coach] Generating end-of-session feedback...")
         msg = get_coaching_message("SESSION_END", summary_context)
         print(f"\n>> {msg}\n")
+    # os._exit skips the C++ destructors that cause the macOS double-free crash
+    os._exit(0)
 
 
 def run_study_buddy(work_mins=25, break_mins=5):
@@ -200,6 +205,18 @@ def run_study_buddy(work_mins=25, break_mins=5):
     print("  Sit up straight — calibrating posture baseline for 5s...")
     print("  Press [Q] or [Esc] to quit.")
     print("=" * 60)
+
+    # Create overlay file immediately so overlay.py shows "session active"
+    import json as _json
+    try:
+        with open(".overlay_msg", "w") as _f:
+            _json.dump({
+                "message": "Session started — sit up straight for calibration!",
+                "trigger": "START", "title": "Pomodoro Buddy",
+                "ts": time.time(), "stats": f"WORK {work_mins:02d}:00  |  Focus —%  |  Calibrating"
+            }, _f)
+    except Exception:
+        pass
 
     try:
         with mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True) as face_mesh, \
