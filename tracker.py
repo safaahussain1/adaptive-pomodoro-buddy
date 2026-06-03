@@ -1,12 +1,22 @@
 import os
-# Suppress mediapipe/TF verbose graph logs and the macOS double-free crash
+import sys
+
 os.environ.setdefault("OBJC_DISABLE_INITIALIZE_FORK_SAFETY", "YES")
-os.environ["GLOG_minloglevel"] = "3"          # silence mediapipe graph dump
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"      # silence TensorFlow info logs
-os.environ["MEDIAPIPE_DISABLE_GPU"] = "1"
+
+# Redirect C-level stderr to /dev/null BEFORE importing cv2/mediapipe.
+# This silences the objc[] warnings and the massive mediapipe graph dump
+# that can't be suppressed with env vars from inside Python.
+_devnull_fd = os.open(os.devnull, os.O_WRONLY)
+_saved_stderr_fd = os.dup(2)
+os.dup2(_devnull_fd, 2)
+os.close(_devnull_fd)
 
 import cv2
 import mediapipe as mp
+
+# Restore stderr so our own print() calls are visible again
+os.dup2(_saved_stderr_fd, 2)
+os.close(_saved_stderr_fd)
 import time
 import math
 import threading
