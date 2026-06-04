@@ -54,16 +54,27 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 ### SCENE 2 — [SLIDE 2: The Problem] — 0:12–0:35
 **Q1 continued — bottlenecks identified**
 
-> "It doesn't know if your focus completely collapsed 10 minutes in. It doesn't know your environment is too loud to concentrate. It doesn't know you're on your phone. And it will never know that you personally focus best at 5 PM after a cup of coffee. I found myself sitting at my desk for hours, going through the motions of studying, with nothing to show for it — and no tool could tell me why."
+> "It doesn't know if your focus completely collapsed 10 minutes in. It doesn't know your environment is too loud to concentrate. It doesn't know you're on your phone. And it will never know that you personally focus best at 5 PM after a cup of coffee. I personally found myself sitting at my desk for hours, going through the motions of studying, with nothing to show for it — and no tool could tell me why."
 
 *Hover over each problem card as you mention it.*
+
+---
+
+**Q2: How exactly does it work? — Sensing pipeline**
+
+
+> "So I built a tool that actually looks at you while you study. It uses Google MediaPipe to track your gaze direction and blink rate through your webcam — detecting both focus and fatigue. It reads your shoulder alignment to detect slouching. Your microphone measures ambient noise levels every second. And the tab or application you're on is monitored in the background."
+
+
+*Show the camera window: face mesh overlay visible, posture skeleton, focus score ticking up as you look at camera with a productive app open.*
+
 
 ---
 
 ### SCENE 3 — [SLIDE 4: Architecture] — 0:35–0:58
 **Q2: Product architecture and deployment**
 
-> "The architecture is fully local — no video ever leaves your machine. Everything runs in a single Python process on your laptop. At the core is a 30-frames-per-second OpenCV loop on the main thread. Three background threads run in parallel: a microphone thread measuring ambient noise every 200ms, an AppKit thread polling the active window every 2 seconds, and whenever an intervention fires, a daemon thread makes an async call to the Gemini API so the video loop is never blocked."
+> "At the core of my architecture is a 30-frames-per-second OpenCV loop on the main thread. Three background threads run in parallel: a microphone thread measuring ambient noise every 200ms, an AppKit thread polling the active window every 2 seconds, and whenever an intervention fires, a daemon thread makes an async call to the Gemini API so the video loop is never blocked."
 
 *Show Slide 4 — the three-column architecture diagram. Point to INPUTS → CORE ENGINE → OUTPUTS.*
 
@@ -76,7 +87,7 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 ### SCENE 4 — [SCREEN RECORDING: tracker.py running] — 0:58–1:18
 **Q2 continued — live sensing pipeline**
 
-> "So here's what it looks like in practice. I run one command — `python tracker.py` — and a webcam window opens with a 5-second posture calibration that sets my personal baseline. Then it starts tracking. That face mesh overlay is 478 landmarks running in real time to extract gaze direction and blink rate. The skeleton is shoulder alignment — if my shoulders drop more than 6% below my calibrated baseline, it flags slouching."
+> "So here's what it looks like in practice. First, a webcam window opens with a 5-second posture calibration that sets my personal baseline. Then it starts tracking. That face mesh overlay is 478 landmarks running in real time to extract gaze direction and blink rate. The skeleton is shoulder alignment — if my shoulders drop more than 6% below my calibrated baseline, it flags slouching."
 
 *Show the camera window: face mesh overlay, posture skeleton, focus score ticking up. Point out each element on screen.*
 
@@ -99,7 +110,7 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 ### SCENE 5 — [DEMO: hold hand up 3 seconds] — 1:32–1:38
 **Q2 continued — phone detection**
 
-> "And if a hand stays visible in frame for more than 3 seconds during a work block, it flags phone use."
+> "And if a hand stays visible in frame for more than 3 seconds during a work block, it flags potential phone use."
 
 *Hold hand up. Show "PHONE DETECTED" appearing on HUD and as a notification.*
 
@@ -108,7 +119,7 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 ### SCENE 6 — [DEMO: wait for transition overlay + sound] — 1:38–1:55
 **Q2 continued — adaptive timer + break UI**
 
-> "The timer itself adapts. When focus drops below 35% past the halfway point, an early break is triggered before the clock runs out. When I'm in deep flow, it extends automatically. And at every transition, there's an 8-second overlay with an audible tone — I can press E to cancel the break and stay in the zone."
+> "Here's the heart of the system — the timer itself adapts. When focus drops below 35% past the halfway point, an early break is triggered before the clock runs out. When I'm in deep flow, it extends the work session automatically. And at every transition, there's an 8-second overlay with an audible tone — and I can press E to cancel the break and stay in the zone."
 
 *Let the 2-minute timer expire. Show the full-screen "BREAK TIME!" overlay and chime. Then show the distinct green break UI with a relaxation tip.*
 
@@ -117,7 +128,7 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 ### SCENE 7 — [SCREEN RECORDING: web dashboard] — 1:55–2:22
 **Q2 continued — data layer, deployment, and AI personalization**
 
-> "Everything is local-first. No cloud, no account. Session data writes to JSON files on your machine after each session. The web dashboard is a Flask server that reads those files — you run it once and open it in any browser tab. It shows your focus trend over time, which hour of day you personally peak, your app breakdown, and the adaptive timer log — every early break and flow extension timestamped with the triggering focus score. That's the auditable proof that the timer is dynamically adjusting."
+> "All of this data feeds into a persistent web dashboard I built with Flask and Chart.js. You can see your focus trend across sessions, which hour of day you personally perform best, your app usage breakdown — and most importantly, the adaptive timer log. Every early break and flow extension is recorded here with a timestamp and the exact focus score that triggered it. This is the proof that the system isn't just running a fixed timer."
 
 *Scroll through the dashboard: focus trend chart → hourly productivity bar chart → adaptive timer log with real entries.*
 
@@ -130,7 +141,7 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 ### SCENE 8 — [SLIDE 9: Use Cases] — 2:22–2:38
 **Q3: Potential use cases and impact**
 
-> "This extends well beyond students. Remote workers can get data-backed evidence that their home environment is hurting focus. Researchers can use it as a non-invasive cognitive load sensor. Long-term blink rate and posture trends could surface early fatigue or burnout indicators before they become serious. My vision is a lightweight background agent that builds a true map of your cognitive patterns over weeks — not just one session."
+> "This tool is useful beyond just students. Remote workers can get data-backed evidence that home office noise is hurting their output. Researchers can use it as a non-invasive cognitive load sensor. Long-term, blink rate and posture trends could surface early burnout indicators before they become serious. My vision is a lightweight background agent that builds a true map of your cognitive patterns over weeks — not just individual sessions."
 
 *Show slide 9 with the 4 use case cards.*
 
@@ -139,7 +150,7 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 ### SCENE 9 — [SLIDE 10: Future Work] — 2:38–2:55
 **Q4: What more would you add?**
 
-> "There's a lot more I'd build with more time. At the top of my list: replacing the rule-based logic with a reinforcement learning policy — where the state is your current focus score, blink rate, noise level, and time of day, and the reward is sustained focus improvement across intervals. I'd also add ambient noise classification — distinguishing speech from music from background hum using a small audio CNN, rather than just measuring raw dB. And a baseline A/B comparison mode: run fixed 25/5 sessions and adaptive sessions with the same user under the same conditions, and let the dashboard show statistically which produces higher sustained focus. The sensor infrastructure is already built. The data pipeline is already running."
+> "There's a lot more I'd build with more time. At the top of my list: replacing the rule-based logic with a reinforcement learning policy — where the state is your current focus score, blink rate, noise level, and time of day, and the reward is sustained focus improvement across intervals. I'd also add ambient noise classification — distinguishing speech from music from background hum using a small audio CNN, rather than just measuring raw dB. And a baseline A/B comparison mode: run fixed 25/5 sessions and adaptive sessions with the same user under the same conditions, and let the dashboard show statistically which produces higher sustained focus."
 
 *Walk slowly through each numbered item on slide 10 as you mention it.*
 
@@ -147,7 +158,7 @@ Target length: ≤ 3 minutes | Format: voiceover + screen recordings
 
 ### SCENE 10 — [SLIDE 11: Closing] — 2:52–3:00
 
-> "One person, one laptop, five sensors, a free API key, and a real problem worth solving."
+> "By shifting the paradigm from rigid, clock-based timers to real-time, bio-adaptive feedback, this study buddy proves that productivity tools shouldn't force humans to act like machines. Instead, our software should adapt to us. Thank you."
 
 ---
 
